@@ -1,0 +1,32 @@
+name: 'Get Vercel Preview URL'
+description: 'Get preview URL of a Vercel deployment'
+author: 'jict'
+inputs:
+  vercel_access_token:
+    description: 'https://vercel.com/docs/rest-api#introduction/api-basics/authentication/creating-an-access-token'
+    required: true
+  vercel_project_id:
+    description: 'Get your Project ID from project settings in Vercel management console'
+    required: true
+  vercel_team_id:
+    description: 'https://vercel.com/docs/rest-api#introduction/api-basics/authentication/accessing-resources-owned-by-a-team'
+    required: false
+  alias_template:
+    description: 'template of alias preview url. eg: {random}.e2e-test.mysite.com'
+    required: false
+  token:
+    description: 'https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret'
+    required: false
+    default: ${{ github.token }}
+  interval:
+    description: 'Time span (ms) waiting between requests to the Vercel API'
+    required: false
+    default: 10000
+outputs:
+  preview_url_alias:
+    description: 'Alias of Vercel Preview URL'
+  preview_url_origin:
+    description: 'Original Vercel Preview URL'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

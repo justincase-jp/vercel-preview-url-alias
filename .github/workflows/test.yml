@@ -1,0 +1,38 @@
+name: 'build-test'
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6.32.7
+      - uses: actions/setup-node@v2.5.1
+        with:
+          node-version: 16
+          cache: 'pnpm'
+      - run: |
+          pnpm i
+      - run: |
+          pnpm all
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get Vercel's Alias Preview URL
+        id: alias-preview-url
+        uses: ./
+        with:
+          vercel_access_token: ${{ secrets.VERCEL_ACCESS_TOKEN }}
+          vercel_team_id: ${{ secrets.VERCEL_TEAM_ID }}
+          vercel_project_id: ${{ secrets.VERCEL_PROJECT_ID }}
+          alias_template: '{random}.vercel-preview-url-alias.joinsure.tech'
+
+      - name: Echo preview
+        run: echo "${{ steps.alias-preview-url.outputs.preview_url_origin }} vs ${{ steps.alias-preview-url.outputs.preview_url_alias }}"
+
+        
