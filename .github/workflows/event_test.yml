@@ -6,7 +6,7 @@ jobs:
     if: github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Preview'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Get Vercel's Alias Preview URL
         id: alias-preview-url
