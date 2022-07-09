@@ -1,7 +1,7 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 1336:
+/***/ 6776:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -30,8 +30,8 @@ async function getDeployment(commitSha, searchOptions) {
   }
   return deployments.find((dp) => dp.meta.githubCommitSha === commitSha);
 }
-async function waitUntilDeployComplete(url, interval, searchOptions) {
-  while (true) {
+async function waitUntilDeployComplete(url, retryTimes, interval, searchOptions) {
+  while (retryTimes > 0) {
     core.debug(`Deployment not ready yet, waiting ${interval}ms -- ${url}`);
     await sleep(interval);
     const deployment = await _axios2.default.get(`https://api.vercel.com/v13/deployments/${url}`, {
@@ -53,7 +53,10 @@ async function waitUntilDeployComplete(url, interval, searchOptions) {
     if (deployment.readyState === "READY") {
       return true;
     }
+    retryTimes--;
   }
+  core.setFailed(`Timeout while waiting for deployment. interval: [${interval}]; retryTimes: [${retryTimes}]`);
+  return false;
 }
 function generateAliasPreviewUrl(urlTemplate) {
   const uuid = _crypto.randomUUID.call(void 0, );
@@ -15152,7 +15155,7 @@ var __webpack_exports__ = {};
 
 
 
-var _chunkJ3WQ5DU5js = __nccwpck_require__(1336);
+var _chunkEF42EQ7Yjs = __nccwpck_require__(6776);
 
 // src/main.ts
 var _core = __nccwpck_require__(6953); var core = _interopRequireWildcard(_core);
@@ -15169,9 +15172,10 @@ var run = async () => {
   });
   const vercel_team_id = core.getInput("vercel_team_id");
   const alias_template = core.getInput("alias_template");
+  const retryTimes = parseInt(core.getInput("retry_times"), 10) || 18;
   const interval = parseInt(core.getInput("interval"), 10) || 1e4;
   const commitSha = ((_a = context.payload.pull_request) == null ? void 0 : _a.head.sha) || context.sha;
-  const deployment = await _chunkJ3WQ5DU5js.getDeployment.call(void 0, commitSha, {
+  const deployment = await _chunkEF42EQ7Yjs.getDeployment.call(void 0, commitSha, {
     vercel_team_id,
     vercel_project_id,
     vercel_access_token
@@ -15185,7 +15189,7 @@ var run = async () => {
     deployComplete = true;
   }
   if (!deployComplete) {
-    const success = await _chunkJ3WQ5DU5js.waitUntilDeployComplete.call(void 0, deployment.url, interval, {
+    const success = await _chunkEF42EQ7Yjs.waitUntilDeployComplete.call(void 0, deployment.url, retryTimes, interval, {
       vercel_team_id,
       vercel_access_token
     });
@@ -15194,8 +15198,8 @@ var run = async () => {
     }
   }
   if (alias_template) {
-    const aliasPreviewUrlGen = _chunkJ3WQ5DU5js.generateAliasPreviewUrl.call(void 0, alias_template);
-    const aliasedPreviewUrl = await _chunkJ3WQ5DU5js.aliasPreviewUrl.call(void 0, deployment.uid, aliasPreviewUrlGen, {
+    const aliasPreviewUrlGen = _chunkEF42EQ7Yjs.generateAliasPreviewUrl.call(void 0, alias_template);
+    const aliasedPreviewUrl = await _chunkEF42EQ7Yjs.aliasPreviewUrl.call(void 0, deployment.uid, aliasPreviewUrlGen, {
       vercel_team_id,
       vercel_access_token
     });
