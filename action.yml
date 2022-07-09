@@ -18,8 +18,12 @@ inputs:
     description: 'https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret'
     required: false
     default: ${{ github.token }}
+  retry_times:
+    description: 'Max retry times for waiting deployment(default: 18)'
+    required: false
+    default: 18
   interval:
-    description: 'Time span (ms) waiting between requests to the Vercel API'
+    description: 'Time span (ms) waiting between requests to the Vercel API(default: 10000ms)'
     required: false
     default: 10000
 outputs:

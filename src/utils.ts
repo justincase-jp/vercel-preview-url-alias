@@ -45,13 +45,14 @@ export async function getDeployment(
 
 export async function waitUntilDeployComplete(
   url: string,
+  retryTimes: number,
   interval: number,
   searchOptions: {
     vercel_team_id: string;
     vercel_access_token: string;
   },
 ): Promise<boolean> {
-  while (true) {
+  while (true && retryTimes > 0) {
     core.debug(`Deployment not ready yet, waiting ${interval}ms -- ${url}`);
     await sleep(interval);
     const deployment = await axios
@@ -76,7 +77,16 @@ export async function waitUntilDeployComplete(
     if (deployment.readyState === 'READY') {
       return true;
     }
+
+    // primitive reassignment is OK
+    // eslint-disable-next-line no-param-reassign
+    retryTimes--;
   }
+
+  core.setFailed(
+    `Timeout while waiting for deployment. interval: [${interval}]; retryTimes: [${retryTimes}]`,
+  );
+  return false;
 }
 
 export function generateAliasPreviewUrl(urlTemplate: string) {

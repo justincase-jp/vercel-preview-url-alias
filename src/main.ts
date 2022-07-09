@@ -20,6 +20,7 @@ const run = async (): Promise<void> => {
   });
   const vercel_team_id = core.getInput('vercel_team_id');
   const alias_template = core.getInput('alias_template');
+  const retryTimes = parseInt(core.getInput('retry_times'), 10) || 18;
   const interval = parseInt(core.getInput('interval'), 10) || 10000;
 
   /* Search Target Deployment */
@@ -45,10 +46,15 @@ const run = async (): Promise<void> => {
 
   /* wait until deployment finished by interval */
   if (!deployComplete) {
-    const success = await waitUntilDeployComplete(deployment.url, interval, {
-      vercel_team_id,
-      vercel_access_token,
-    });
+    const success = await waitUntilDeployComplete(
+      deployment.url,
+      retryTimes,
+      interval,
+      {
+        vercel_team_id,
+        vercel_access_token,
+      },
+    );
     if (!success) {
       return;
     }
