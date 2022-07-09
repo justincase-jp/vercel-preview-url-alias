@@ -1,6 +1,9 @@
-name: 'Get Vercel Preview URL'
-description: 'Get preview URL of a Vercel deployment'
-author: 'jict'
+name: 'Get and Alias Vercel Preview URL'
+description: 'Get preview URL of a Vercel deployment and alias it automatically'
+branding:
+  icon: activity
+  color: gray-dark
+author: 'justInCaseTechnologies'
 inputs:
   vercel_access_token:
     description: 'https://vercel.com/docs/rest-api#introduction/api-basics/authentication/creating-an-access-token'
