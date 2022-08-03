@@ -18,4 +18,6 @@ jobs:
           alias_template: '{random}.vercel-preview-url-alias.joinsure.tech'
 
       - name: Echo preview
-        run: echo "${{ steps.alias-preview-url.outputs.preview_url_origin }} vs ${{ steps.alias-preview-url.outputs.preview_url_alias }}"
+        run: |
+          echo "${{ steps.alias-preview-url.outputs.preview_url_origin }} vs ${{ steps.alias-preview-url.outputs.preview_url_alias }}"
+          echo "${{ steps.alias-preview-url.outputs.status }}"
