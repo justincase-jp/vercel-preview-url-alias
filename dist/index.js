@@ -1,7 +1,7 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 8792:
+/***/ 2221:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -33,7 +33,7 @@ async function getDeployment(commitSha, searchOptions) {
   }
   return deployments.find((dp) => dp.meta.githubCommitSha === commitSha);
 }
-async function waitUntilDeployComplete(url, retryTimes, interval, searchOptions) {
+async function waitUntilDeployComplete(url, failWhenCancelled, retryTimes, interval, searchOptions) {
   while (retryTimes > 0) {
     core.debug(`Deployment not ready yet, waiting ${interval}ms -- ${url}`);
     await sleep(interval);
@@ -45,12 +45,15 @@ async function waitUntilDeployComplete(url, retryTimes, interval, searchOptions)
         Authorization: `Bearer ${searchOptions.vercel_access_token}`
       }
     }).then(({ data }) => data);
+    core.setOutput("status", deployment.readyState);
     if (deployment.readyState === "ERROR") {
       core.setFailed(`An error occurred while getting preview url`);
       return false;
     }
     if (deployment.readyState === "CANCELED") {
-      core.setFailed(`Deployment was canceled`);
+      if (failWhenCancelled) {
+        core.setFailed(`Deployment was canceled`);
+      }
       return false;
     }
     if (deployment.readyState === "READY") {
@@ -58,6 +61,7 @@ async function waitUntilDeployComplete(url, retryTimes, interval, searchOptions)
     }
     retryTimes--;
   }
+  core.setOutput("status", "TIMEOUT");
   core.setFailed(
     `Timeout while waiting for deployment. interval: [${interval}]; retryTimes: [${retryTimes}]`
   );
@@ -15234,7 +15238,7 @@ var __webpack_exports__ = {};
 
 
 
-var _chunkWBY7DQBPjs = __nccwpck_require__(8792);
+var _chunk5STT25G6js = __nccwpck_require__(2221);
 
 // src/main.ts
 var _core = __nccwpck_require__(6953); var core = _interopRequireWildcard(_core);
@@ -15250,11 +15254,12 @@ var run = async () => {
     required: true
   });
   const vercel_team_id = core.getInput("vercel_team_id");
-  const alias_template = core.getInput("alias_template");
+  const aliasTemplate = core.getInput("alias_template");
   const retryTimes = parseInt(core.getInput("retry_times"), 10) || 18;
   const interval = parseInt(core.getInput("interval"), 10) || 1e4;
+  const failWhenCancelled = core.getBooleanInput("fail_when_cancelled");
   const commitSha = ((_a = context.payload.pull_request) == null ? void 0 : _a.head.sha) || context.sha;
-  const deployment = await _chunkWBY7DQBPjs.getDeployment.call(void 0, commitSha, {
+  const deployment = await _chunk5STT25G6js.getDeployment.call(void 0, commitSha, {
     vercel_team_id,
     vercel_project_id,
     vercel_access_token
@@ -15270,8 +15275,9 @@ var run = async () => {
     deployComplete = true;
   }
   if (!deployComplete) {
-    const success = await _chunkWBY7DQBPjs.waitUntilDeployComplete.call(void 0, 
+    const success = await _chunk5STT25G6js.waitUntilDeployComplete.call(void 0, 
       deployment.url,
+      failWhenCancelled,
       retryTimes,
       interval,
       {
@@ -15283,9 +15289,9 @@ var run = async () => {
       return;
     }
   }
-  if (alias_template) {
-    const aliasPreviewUrlGen = _chunkWBY7DQBPjs.generateAliasPreviewUrl.call(void 0, alias_template);
-    const aliasedPreviewUrl = await _chunkWBY7DQBPjs.aliasPreviewUrl.call(void 0, 
+  if (aliasTemplate) {
+    const aliasPreviewUrlGen = _chunk5STT25G6js.generateAliasPreviewUrl.call(void 0, aliasTemplate);
+    const aliasedPreviewUrl = await _chunk5STT25G6js.aliasPreviewUrl.call(void 0, 
       deployment.uid,
       aliasPreviewUrlGen,
       {

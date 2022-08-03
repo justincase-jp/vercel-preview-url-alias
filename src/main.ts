@@ -19,9 +19,10 @@ const run = async (): Promise<void> => {
     required: true,
   });
   const vercel_team_id = core.getInput('vercel_team_id');
-  const alias_template = core.getInput('alias_template');
+  const aliasTemplate = core.getInput('alias_template');
   const retryTimes = parseInt(core.getInput('retry_times'), 10) || 18;
   const interval = parseInt(core.getInput('interval'), 10) || 10000;
+  const failWhenCancelled = core.getBooleanInput('fail_when_cancelled');
 
   /* Search Target Deployment */
   // pull_request: head.sha; push/merge: context.sha
@@ -48,6 +49,7 @@ const run = async (): Promise<void> => {
   if (!deployComplete) {
     const success = await waitUntilDeployComplete(
       deployment.url,
+      failWhenCancelled,
       retryTimes,
       interval,
       {
@@ -61,8 +63,8 @@ const run = async (): Promise<void> => {
   }
 
   /* alias preview url */
-  if (alias_template) {
-    const aliasPreviewUrlGen = generateAliasPreviewUrl(alias_template);
+  if (aliasTemplate) {
+    const aliasPreviewUrlGen = generateAliasPreviewUrl(aliasTemplate);
     const aliasedPreviewUrl = await aliasPreviewUrl(
       deployment.uid,
       aliasPreviewUrlGen,
