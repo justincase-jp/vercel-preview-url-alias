@@ -99,11 +99,13 @@ jobs:
 | alias_template      |    ○     |                | Your alias URL template. eg: (`hello.mysite.com`) or (`{random}.e2e-test.mysite.com`)            |
 | token               |          | `github.token` | Github Personal Access Token deployment                                                          |
 | interval            |          |  `10000 (ms)`  | waiting interval while deployment is not finished in milliseconds                                |
+| fail_when_cancelled |          |     `true`     | Fail CI when deployment status is `CANCELED`                                                     |
 
-| `outputs`            | description                              |
-| :------------------- | :--------------------------------------- |
-| `preview_url_alias`  | Alias of Vercel's Deployment Preview URL |
-| `preview_url_origin` | Original Vercel's Deployment Preview URL |
+| `outputs`            | description                                          |
+| :------------------- | :--------------------------------------------------- |
+| `preview_url_alias`  | Alias of Vercel's Deployment Preview URL             |
+| `preview_url_origin` | Original Vercel's Deployment Preview URL             |
+| `status`             | `READY`, `ERROR`, `CANCELED`, `DEPLOYMENT_NOT_FOUND` |
 
 ## License
 
