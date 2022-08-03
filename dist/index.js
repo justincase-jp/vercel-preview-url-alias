@@ -15265,6 +15265,7 @@ var run = async () => {
     vercel_access_token
   });
   if (!deployment) {
+    core.setOutput("status", "DEPLOYMENT_NOT_FOUND");
     core.setFailed(`Unable to find Vercel deployment. sha: ${commitSha}`);
     return;
   }
@@ -15272,6 +15273,7 @@ var run = async () => {
     `deployment url: ${deployment.url} - ${deployment.uid} - ${deployment.state}`
   );
   if (deployment.state === "READY") {
+    core.setOutput("status", "READY");
     deployComplete = true;
   }
   if (!deployComplete) {
