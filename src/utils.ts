@@ -45,6 +45,7 @@ export async function getDeployment(
 
 export async function waitUntilDeployComplete(
   url: string,
+  failWhenCancelled: boolean,
   retryTimes: number,
   interval: number,
   searchOptions: {
@@ -66,12 +67,16 @@ export async function waitUntilDeployComplete(
       })
       .then(({ data }) => data);
 
+    core.setOutput('status', deployment.readyState);
+
     if (deployment.readyState === 'ERROR') {
       core.setFailed(`An error occurred while getting preview url`);
       return false;
     }
     if (deployment.readyState === 'CANCELED') {
-      core.setFailed(`Deployment was canceled`);
+      if (failWhenCancelled) {
+        core.setFailed(`Deployment was canceled`);
+      }
       return false;
     }
     if (deployment.readyState === 'READY') {
@@ -83,6 +88,7 @@ export async function waitUntilDeployComplete(
     retryTimes--;
   }
 
+  core.setOutput('status', 'TIMEOUT');
   core.setFailed(
     `Timeout while waiting for deployment. interval: [${interval}]; retryTimes: [${retryTimes}]`,
   );

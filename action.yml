@@ -29,11 +29,17 @@ inputs:
     description: 'Time span (ms) waiting between requests to the Vercel API(default: 10000ms)'
     required: false
     default: 10000
+  fail_when_cancelled:
+    description: 'Automatically fail if deployment of Vercel is cancelled(default: true)'
+    required: false
+    default: true
 outputs:
   preview_url_alias:
     description: 'Alias of Vercel Preview URL'
   preview_url_origin:
     description: 'Original Vercel Preview URL'
+  status:
+    description: 'Status of the Vercel deployment'
 runs:
   using: 'node16'
   main: 'dist/index.js'
