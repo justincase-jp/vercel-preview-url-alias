@@ -35,7 +35,7 @@
     "@jict/prettier-config": "^0.0.2",
     "@swc/core": "^1.2.220",
     "@swc/jest": "^0.2.22",
-    "@types/jest": "^28.1.6",
+    "@types/jest": "^28.1.8",
     "@types/node": "^18.0.0",
     "@vercel/ncc": "^0.34.0",
     "eslint": "^8.22.0",
