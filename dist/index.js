@@ -1,94 +1,134 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 2221:
+/***/ 3528:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", ({value: true})); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }// src/utils.ts
+Object.defineProperty(exports, "__esModule", ({value: true})); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var __getOwnPropNames = Object.getOwnPropertyNames;
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
+var __commonJS = (cb, mod) => function __require() {
+  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+};
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+
+// src/utils.ts
 var _crypto = __nccwpck_require__(6113);
 var _core = __nccwpck_require__(7954); var core = _interopRequireWildcard(_core);
 var _axios = __nccwpck_require__(8734); var _axios2 = _interopRequireDefault(_axios);
-async function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
+function sleep(ms) {
+  return __async(this, null, function* () {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
   });
 }
-async function getDeployment(commitSha, searchOptions) {
-  const { deployments } = await _axios2.default.get(
-    "https://api.vercel.com/v6/deployments",
-    {
-      params: {
-        teamId: searchOptions.vercel_team_id,
-        projectId: searchOptions.vercel_project_id,
-        limit: 20
-      },
-      headers: {
-        Authorization: `Bearer ${searchOptions.vercel_access_token}`
+function getDeployment(commitSha, searchOptions) {
+  return __async(this, null, function* () {
+    const { deployments } = yield _axios2.default.get(
+      "https://api.vercel.com/v6/deployments",
+      {
+        params: {
+          teamId: searchOptions.vercel_team_id,
+          projectId: searchOptions.vercel_project_id,
+          limit: 20
+        },
+        headers: {
+          Authorization: `Bearer ${searchOptions.vercel_access_token}`
+        }
       }
+    ).then(({ data }) => data);
+    if (!(deployments == null ? void 0 : deployments.length)) {
+      return void 0;
     }
-  ).then(({ data }) => data);
-  if (!(deployments == null ? void 0 : deployments.length)) {
-    return void 0;
-  }
-  return deployments.find((dp) => dp.meta.githubCommitSha === commitSha);
+    return deployments.find((dp) => dp.meta.githubCommitSha === commitSha);
+  });
 }
-async function waitUntilDeployComplete(url, failWhenCancelled, retryTimes, interval, searchOptions) {
-  while (retryTimes > 0) {
-    core.debug(`Deployment not ready yet, waiting ${interval}ms -- ${url}`);
-    await sleep(interval);
-    const deployment = await _axios2.default.get(`https://api.vercel.com/v13/deployments/${url}`, {
-      params: {
-        teamId: searchOptions.vercel_team_id
-      },
-      headers: {
-        Authorization: `Bearer ${searchOptions.vercel_access_token}`
+function waitUntilDeployComplete(url, failWhenCancelled, retryTimes, interval, searchOptions) {
+  return __async(this, null, function* () {
+    while (retryTimes > 0) {
+      core.debug(`Deployment not ready yet, waiting ${interval}ms -- ${url}`);
+      yield sleep(interval);
+      const deployment = yield _axios2.default.get(`https://api.vercel.com/v13/deployments/${url}`, {
+        params: {
+          teamId: searchOptions.vercel_team_id
+        },
+        headers: {
+          Authorization: `Bearer ${searchOptions.vercel_access_token}`
+        }
+      }).then(({ data }) => data);
+      core.setOutput("status", deployment.readyState);
+      if (deployment.readyState === "ERROR") {
+        core.setFailed(`An error occurred while getting preview url`);
+        return false;
       }
-    }).then(({ data }) => data);
-    core.setOutput("status", deployment.readyState);
-    if (deployment.readyState === "ERROR") {
-      core.setFailed(`An error occurred while getting preview url`);
-      return false;
-    }
-    if (deployment.readyState === "CANCELED") {
-      if (failWhenCancelled) {
-        core.setFailed(`Deployment was canceled`);
+      if (deployment.readyState === "CANCELED") {
+        if (failWhenCancelled) {
+          core.setFailed(`Deployment was canceled`);
+        }
+        return false;
       }
-      return false;
+      if (deployment.readyState === "READY") {
+        return true;
+      }
+      retryTimes--;
     }
-    if (deployment.readyState === "READY") {
-      return true;
-    }
-    retryTimes--;
-  }
-  core.setOutput("status", "TIMEOUT");
-  core.setFailed(
-    `Timeout while waiting for deployment. interval: [${interval}]; retryTimes: [${retryTimes}]`
-  );
-  return false;
+    core.setOutput("status", "TIMEOUT");
+    core.setFailed(
+      `Timeout while waiting for deployment. interval: [${interval}]; retryTimes: [${retryTimes}]`
+    );
+    return false;
+  });
 }
 function generateAliasPreviewUrl(urlTemplate) {
   const uuid = _crypto.randomUUID.call(void 0, );
   return urlTemplate.replace("{random}", uuid);
 }
-async function aliasPreviewUrl(deploymentId, aliasTo, createOptions) {
-  core.debug(`generate alias preview url: ${aliasTo}`);
-  const aliasRes = await _axios2.default.post(
-    `https://api.vercel.com/v2/deployments/${deploymentId}/aliases`,
-    {
-      alias: aliasTo
-    },
-    {
-      params: {
-        teamId: createOptions.vercel_team_id
+function aliasPreviewUrl(deploymentId, aliasTo, createOptions) {
+  return __async(this, null, function* () {
+    core.debug(`generate alias preview url: ${aliasTo}`);
+    const aliasRes = yield _axios2.default.post(
+      `https://api.vercel.com/v2/deployments/${deploymentId}/aliases`,
+      {
+        alias: aliasTo
       },
-      headers: {
-        Authorization: `Bearer ${createOptions.vercel_access_token}`
+      {
+        params: {
+          teamId: createOptions.vercel_team_id
+        },
+        headers: {
+          Authorization: `Bearer ${createOptions.vercel_access_token}`
+        }
       }
-    }
-  ).then(({ data }) => data);
-  return aliasRes.alias;
+    ).then(({ data }) => data);
+    return aliasRes.alias;
+  });
 }
+var init_utils = __esm({
+  "src/utils.ts"() {
+  }
+});
 
 
 
@@ -96,7 +136,10 @@ async function aliasPreviewUrl(deploymentId, aliasTo, createOptions) {
 
 
 
-exports.sleep = sleep; exports.getDeployment = getDeployment; exports.waitUntilDeployComplete = waitUntilDeployComplete; exports.generateAliasPreviewUrl = generateAliasPreviewUrl; exports.aliasPreviewUrl = aliasPreviewUrl;
+
+
+
+exports.__commonJS = __commonJS; exports.__async = __async; exports.sleep = sleep; exports.getDeployment = getDeployment; exports.waitUntilDeployComplete = waitUntilDeployComplete; exports.generateAliasPreviewUrl = generateAliasPreviewUrl; exports.aliasPreviewUrl = aliasPreviewUrl; exports.init_utils = init_utils;
 
 
 /***/ }),
@@ -15930,83 +15973,93 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
- function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } }
+var exports = __webpack_exports__;
+Object.defineProperty(exports, "__esModule", ({value: true})); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } }
 
 
 
 
-var _chunk5STT25G6js = __nccwpck_require__(2221);
+
+
+
+var _chunk3LZYGKVUjs = __nccwpck_require__(3528);
 
 // src/main.ts
 var _core = __nccwpck_require__(7954); var core = _interopRequireWildcard(_core);
 var _github = __nccwpck_require__(9939); var github = _interopRequireWildcard(_github);
-var run = async () => {
-  var _a;
-  const { context } = github;
-  let deployComplete = false;
-  const vercel_access_token = core.getInput("vercel_access_token", {
-    required: true
-  });
-  const vercel_project_id = core.getInput("vercel_project_id", {
-    required: true
-  });
-  const vercel_team_id = core.getInput("vercel_team_id");
-  const aliasTemplate = core.getInput("alias_template");
-  const retryTimes = parseInt(core.getInput("retry_times"), 10) || 18;
-  const interval = parseInt(core.getInput("interval"), 10) || 1e4;
-  const failWhenCancelled = core.getBooleanInput("fail_when_cancelled");
-  const commitSha = ((_a = context.payload.pull_request) == null ? void 0 : _a.head.sha) || context.sha;
-  const deployment = await _chunk5STT25G6js.getDeployment.call(void 0, commitSha, {
-    vercel_team_id,
-    vercel_project_id,
-    vercel_access_token
-  });
-  if (!deployment) {
-    core.setOutput("status", "DEPLOYMENT_NOT_FOUND");
-    core.setFailed(`Unable to find Vercel deployment. sha: ${commitSha}`);
-    return;
-  }
-  core.debug(
-    `deployment url: ${deployment.url} - ${deployment.uid} - ${deployment.state}`
-  );
-  if (deployment.state === "READY") {
-    core.setOutput("status", "READY");
-    deployComplete = true;
-  }
-  if (!deployComplete) {
-    const success = await _chunk5STT25G6js.waitUntilDeployComplete.call(void 0, 
-      deployment.url,
-      failWhenCancelled,
-      retryTimes,
-      interval,
-      {
+var require_main = _chunk3LZYGKVUjs.__commonJS.call(void 0, {
+  "src/main.ts"(exports) {
+    _chunk3LZYGKVUjs.init_utils.call(void 0, );
+    var run = () => _chunk3LZYGKVUjs.__async.call(void 0, exports, null, function* () {
+      var _a;
+      const { context } = github;
+      let deployComplete = false;
+      const vercel_access_token = core.getInput("vercel_access_token", {
+        required: true
+      });
+      const vercel_project_id = core.getInput("vercel_project_id", {
+        required: true
+      });
+      const vercel_team_id = core.getInput("vercel_team_id");
+      const aliasTemplate = core.getInput("alias_template");
+      const retryTimes = parseInt(core.getInput("retry_times"), 10) || 18;
+      const interval = parseInt(core.getInput("interval"), 10) || 1e4;
+      const failWhenCancelled = core.getBooleanInput("fail_when_cancelled");
+      const commitSha = ((_a = context.payload.pull_request) == null ? void 0 : _a.head.sha) || context.sha;
+      const deployment = yield _chunk3LZYGKVUjs.getDeployment.call(void 0, commitSha, {
         vercel_team_id,
+        vercel_project_id,
         vercel_access_token
+      });
+      if (!deployment) {
+        core.setOutput("status", "DEPLOYMENT_NOT_FOUND");
+        core.setFailed(`Unable to find Vercel deployment. sha: ${commitSha}`);
+        return;
       }
-    );
-    if (!success) {
-      return;
-    }
-  }
-  if (aliasTemplate) {
-    const aliasPreviewUrlGen = _chunk5STT25G6js.generateAliasPreviewUrl.call(void 0, aliasTemplate);
-    const aliasedPreviewUrl = await _chunk5STT25G6js.aliasPreviewUrl.call(void 0, 
-      deployment.uid,
-      aliasPreviewUrlGen,
-      {
-        vercel_team_id,
-        vercel_access_token
+      core.debug(
+        `deployment url: ${deployment.url} - ${deployment.uid} - ${deployment.state}`
+      );
+      if (deployment.state === "READY") {
+        core.setOutput("status", "READY");
+        deployComplete = true;
       }
-    );
-    core.setOutput("preview_url_alias", aliasedPreviewUrl);
-  }
-  core.setOutput("preview_url_origin", deployment.url);
-};
-run().catch((error) => {
-  if (error instanceof Error) {
-    core.setFailed(error.message);
+      if (!deployComplete) {
+        const success = yield _chunk3LZYGKVUjs.waitUntilDeployComplete.call(void 0, 
+          deployment.url,
+          failWhenCancelled,
+          retryTimes,
+          interval,
+          {
+            vercel_team_id,
+            vercel_access_token
+          }
+        );
+        if (!success) {
+          return;
+        }
+      }
+      if (aliasTemplate) {
+        const aliasPreviewUrlGen = _chunk3LZYGKVUjs.generateAliasPreviewUrl.call(void 0, aliasTemplate);
+        const aliasedPreviewUrl = yield _chunk3LZYGKVUjs.aliasPreviewUrl.call(void 0, 
+          deployment.uid,
+          aliasPreviewUrlGen,
+          {
+            vercel_team_id,
+            vercel_access_token
+          }
+        );
+        core.setOutput("preview_url_alias", aliasedPreviewUrl);
+      }
+      core.setOutput("preview_url_origin", deployment.url);
+    });
+    run().catch((error) => {
+      if (error instanceof Error) {
+        core.setFailed(error.message);
+      }
+    });
   }
 });
+exports["default"] = require_main();
 
 })();
 
