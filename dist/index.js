@@ -1,7 +1,7 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 5909:
+/***/ 5089:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -55,7 +55,8 @@ function getDeployment(commitSha, searchOptions) {
           limit: 20
         },
         headers: {
-          Authorization: `Bearer ${searchOptions.vercel_access_token}`
+          Authorization: `Bearer ${searchOptions.vercel_access_token}`,
+          "Accept-Encoding": "gzip,deflate,compress"
         }
       }
     ).then(({ data }) => data);
@@ -75,7 +76,8 @@ function waitUntilDeployComplete(url, failWhenCancelled, retryTimes, interval, s
           teamId: searchOptions.vercel_team_id
         },
         headers: {
-          Authorization: `Bearer ${searchOptions.vercel_access_token}`
+          Authorization: `Bearer ${searchOptions.vercel_access_token}`,
+          "Accept-Encoding": "gzip,deflate,compress"
         }
       }).then(({ data }) => data);
       core.setOutput("status", deployment.readyState);
@@ -118,7 +120,8 @@ function aliasPreviewUrl(deploymentId, aliasTo, createOptions) {
           teamId: createOptions.vercel_team_id
         },
         headers: {
-          Authorization: `Bearer ${createOptions.vercel_access_token}`
+          Authorization: `Bearer ${createOptions.vercel_access_token}`,
+          "Accept-Encoding": "gzip,deflate,compress"
         }
       }
     ).then(({ data }) => data);
@@ -17185,15 +17188,15 @@ Object.defineProperty(exports, "__esModule", ({value: true})); function _interop
 
 
 
-var _chunk3LZYGKVUjs = __nccwpck_require__(5909);
+var _chunkTZCRTR22js = __nccwpck_require__(5089);
 
 // src/main.ts
 var _core = __nccwpck_require__(8686); var core = _interopRequireWildcard(_core);
 var _github = __nccwpck_require__(7481); var github = _interopRequireWildcard(_github);
-var require_main = _chunk3LZYGKVUjs.__commonJS.call(void 0, {
+var require_main = _chunkTZCRTR22js.__commonJS.call(void 0, {
   "src/main.ts"(exports) {
-    _chunk3LZYGKVUjs.init_utils.call(void 0, );
-    var run = () => _chunk3LZYGKVUjs.__async.call(void 0, exports, null, function* () {
+    _chunkTZCRTR22js.init_utils.call(void 0, );
+    var run = () => _chunkTZCRTR22js.__async.call(void 0, exports, null, function* () {
       var _a;
       const { context } = github;
       let deployComplete = false;
@@ -17209,7 +17212,7 @@ var require_main = _chunk3LZYGKVUjs.__commonJS.call(void 0, {
       const interval = parseInt(core.getInput("interval"), 10) || 1e4;
       const failWhenCancelled = core.getBooleanInput("fail_when_cancelled");
       const commitSha = ((_a = context.payload.pull_request) == null ? void 0 : _a.head.sha) || context.sha;
-      const deployment = yield _chunk3LZYGKVUjs.getDeployment.call(void 0, commitSha, {
+      const deployment = yield _chunkTZCRTR22js.getDeployment.call(void 0, commitSha, {
         vercel_team_id,
         vercel_project_id,
         vercel_access_token
@@ -17227,7 +17230,7 @@ var require_main = _chunk3LZYGKVUjs.__commonJS.call(void 0, {
         deployComplete = true;
       }
       if (!deployComplete) {
-        const success = yield _chunk3LZYGKVUjs.waitUntilDeployComplete.call(void 0, 
+        const success = yield _chunkTZCRTR22js.waitUntilDeployComplete.call(void 0, 
           deployment.url,
           failWhenCancelled,
           retryTimes,
@@ -17242,8 +17245,8 @@ var require_main = _chunk3LZYGKVUjs.__commonJS.call(void 0, {
         }
       }
       if (aliasTemplate) {
-        const aliasPreviewUrlGen = _chunk3LZYGKVUjs.generateAliasPreviewUrl.call(void 0, aliasTemplate);
-        const aliasedPreviewUrl = yield _chunk3LZYGKVUjs.aliasPreviewUrl.call(void 0, 
+        const aliasPreviewUrlGen = _chunkTZCRTR22js.generateAliasPreviewUrl.call(void 0, aliasTemplate);
+        const aliasedPreviewUrl = yield _chunkTZCRTR22js.aliasPreviewUrl.call(void 0, 
           deployment.uid,
           aliasPreviewUrlGen,
           {

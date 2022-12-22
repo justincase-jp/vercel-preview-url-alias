@@ -30,6 +30,9 @@ export async function getDeployment(
         },
         headers: {
           Authorization: `Bearer ${searchOptions.vercel_access_token}`,
+          // to fix bug in axios@1.2.1
+          // https://github.com/axios/axios/issues/5346#issuecomment-1340241163
+          'Accept-Encoding': 'gzip,deflate,compress',
         },
       },
     )
@@ -63,6 +66,7 @@ export async function waitUntilDeployComplete(
         },
         headers: {
           Authorization: `Bearer ${searchOptions.vercel_access_token}`,
+          'Accept-Encoding': 'gzip,deflate,compress',
         },
       })
       .then(({ data }) => data);
@@ -121,6 +125,7 @@ export async function aliasPreviewUrl(
         },
         headers: {
           Authorization: `Bearer ${createOptions.vercel_access_token}`,
+          'Accept-Encoding': 'gzip,deflate,compress',
         },
       },
     )
