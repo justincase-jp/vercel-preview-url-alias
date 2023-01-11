@@ -1,7 +1,7 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 5089:
+/***/ 5909:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -36,7 +36,7 @@ var __async = (__this, __arguments, generator) => {
 // src/utils.ts
 var _crypto = __nccwpck_require__(6113);
 var _core = __nccwpck_require__(8686); var core = _interopRequireWildcard(_core);
-var _axios = __nccwpck_require__(6408); var _axios2 = _interopRequireDefault(_axios);
+var _axios = __nccwpck_require__(8243); var _axios2 = _interopRequireDefault(_axios);
 function sleep(ms) {
   return __async(this, null, function* () {
     return new Promise((resolve) => {
@@ -55,8 +55,7 @@ function getDeployment(commitSha, searchOptions) {
           limit: 20
         },
         headers: {
-          Authorization: `Bearer ${searchOptions.vercel_access_token}`,
-          "Accept-Encoding": "gzip,deflate,compress"
+          Authorization: `Bearer ${searchOptions.vercel_access_token}`
         }
       }
     ).then(({ data }) => data);
@@ -76,8 +75,7 @@ function waitUntilDeployComplete(url, failWhenCancelled, retryTimes, interval, s
           teamId: searchOptions.vercel_team_id
         },
         headers: {
-          Authorization: `Bearer ${searchOptions.vercel_access_token}`,
-          "Accept-Encoding": "gzip,deflate,compress"
+          Authorization: `Bearer ${searchOptions.vercel_access_token}`
         }
       }).then(({ data }) => data);
       core.setOutput("status", deployment.readyState);
@@ -120,8 +118,7 @@ function aliasPreviewUrl(deploymentId, aliasTo, createOptions) {
           teamId: createOptions.vercel_team_id
         },
         headers: {
-          Authorization: `Bearer ${createOptions.vercel_access_token}`,
-          "Accept-Encoding": "gzip,deflate,compress"
+          Authorization: `Bearer ${createOptions.vercel_access_token}`
         }
       }
     ).then(({ data }) => data);
@@ -13237,11 +13234,11 @@ module.exports = require("zlib");
 
 /***/ }),
 
-/***/ 6408:
+/***/ 8243:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
-// Axios v1.2.1 Copyright (c) 2022 Matt Zabriskie and contributors
+// Axios v1.2.2 Copyright (c) 2022 Matt Zabriskie and contributors
 
 
 const FormData$1 = __nccwpck_require__(6862);
@@ -13546,7 +13543,11 @@ function findKey(obj, key) {
   return null;
 }
 
-const _global = typeof self === "undefined" ? typeof global === "undefined" ? undefined : global : self;
+const _global = (() => {
+  /*eslint no-undef:0*/
+  if (typeof globalThis !== "undefined") return globalThis;
+  return typeof self !== "undefined" ? self : (typeof window !== 'undefined' ? window : global)
+})();
 
 const isContextDefined = (context) => !isUndefined(context) && context !== _global;
 
@@ -15150,7 +15151,7 @@ function buildFullPath(baseURL, requestedURL) {
   return requestedURL;
 }
 
-const VERSION = "1.2.1";
+const VERSION = "1.2.2";
 
 function parseProtocol(url) {
   const match = /^([-+\w]{1,25})(:?\/\/|:)/.exec(url);
@@ -15475,6 +15476,11 @@ const AxiosTransformStream$1 = AxiosTransformStream;
 const zlibOptions = {
   flush: zlib__default["default"].constants.Z_SYNC_FLUSH,
   finishFlush: zlib__default["default"].constants.Z_SYNC_FLUSH
+};
+
+const brotliOptions = {
+  flush: zlib__default["default"].constants.BROTLI_OPERATION_FLUSH,
+  finishFlush: zlib__default["default"].constants.BROTLI_OPERATION_FLUSH
 };
 
 const isBrotliSupported = utils.isFunction(zlib__default["default"].createBrotliDecompress);
@@ -15867,7 +15873,9 @@ const httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
         switch (res.headers['content-encoding']) {
         /*eslint default-case:0*/
         case 'gzip':
+        case 'x-gzip':
         case 'compress':
+        case 'x-compress':
         case 'deflate':
           // add the unzipper to the body stream processing pipeline
           streams.push(zlib__default["default"].createUnzip(zlibOptions));
@@ -15877,7 +15885,7 @@ const httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
           break;
         case 'br':
           if (isBrotliSupported) {
-            streams.push(zlib__default["default"].createBrotliDecompress(zlibOptions));
+            streams.push(zlib__default["default"].createBrotliDecompress(brotliOptions));
             delete res.headers['content-encoding'];
           }
         }
@@ -17052,6 +17060,78 @@ function isAxiosError(payload) {
   return utils.isObject(payload) && (payload.isAxiosError === true);
 }
 
+const HttpStatusCode = {
+  Continue: 100,
+  SwitchingProtocols: 101,
+  Processing: 102,
+  EarlyHints: 103,
+  Ok: 200,
+  Created: 201,
+  Accepted: 202,
+  NonAuthoritativeInformation: 203,
+  NoContent: 204,
+  ResetContent: 205,
+  PartialContent: 206,
+  MultiStatus: 207,
+  AlreadyReported: 208,
+  ImUsed: 226,
+  MultipleChoices: 300,
+  MovedPermanently: 301,
+  Found: 302,
+  SeeOther: 303,
+  NotModified: 304,
+  UseProxy: 305,
+  Unused: 306,
+  TemporaryRedirect: 307,
+  PermanentRedirect: 308,
+  BadRequest: 400,
+  Unauthorized: 401,
+  PaymentRequired: 402,
+  Forbidden: 403,
+  NotFound: 404,
+  MethodNotAllowed: 405,
+  NotAcceptable: 406,
+  ProxyAuthenticationRequired: 407,
+  RequestTimeout: 408,
+  Conflict: 409,
+  Gone: 410,
+  LengthRequired: 411,
+  PreconditionFailed: 412,
+  PayloadTooLarge: 413,
+  UriTooLong: 414,
+  UnsupportedMediaType: 415,
+  RangeNotSatisfiable: 416,
+  ExpectationFailed: 417,
+  ImATeapot: 418,
+  MisdirectedRequest: 421,
+  UnprocessableEntity: 422,
+  Locked: 423,
+  FailedDependency: 424,
+  TooEarly: 425,
+  UpgradeRequired: 426,
+  PreconditionRequired: 428,
+  TooManyRequests: 429,
+  RequestHeaderFieldsTooLarge: 431,
+  UnavailableForLegalReasons: 451,
+  InternalServerError: 500,
+  NotImplemented: 501,
+  BadGateway: 502,
+  ServiceUnavailable: 503,
+  GatewayTimeout: 504,
+  HttpVersionNotSupported: 505,
+  VariantAlsoNegotiates: 506,
+  InsufficientStorage: 507,
+  LoopDetected: 508,
+  NotExtended: 510,
+  NetworkAuthenticationRequired: 511,
+};
+
+Object.entries(HttpStatusCode).forEach(([key, value]) => {
+  HttpStatusCode[value] = key;
+});
+
+const HttpStatusCode$1 = HttpStatusCode;
+
 /**
  * Create an instance of Axios
  *
@@ -17112,6 +17192,8 @@ axios.mergeConfig = mergeConfig;
 axios.AxiosHeaders = AxiosHeaders$1;
 
 axios.formToJSON = thing => formDataToJSON(utils.isHTMLForm(thing) ? new FormData(thing) : thing);
+
+axios.HttpStatusCode = HttpStatusCode$1;
 
 axios.default = axios;
 
@@ -17188,15 +17270,15 @@ Object.defineProperty(exports, "__esModule", ({value: true})); function _interop
 
 
 
-var _chunkTZCRTR22js = __nccwpck_require__(5089);
+var _chunk3LZYGKVUjs = __nccwpck_require__(5909);
 
 // src/main.ts
 var _core = __nccwpck_require__(8686); var core = _interopRequireWildcard(_core);
 var _github = __nccwpck_require__(7481); var github = _interopRequireWildcard(_github);
-var require_main = _chunkTZCRTR22js.__commonJS.call(void 0, {
+var require_main = _chunk3LZYGKVUjs.__commonJS.call(void 0, {
   "src/main.ts"(exports) {
-    _chunkTZCRTR22js.init_utils.call(void 0, );
-    var run = () => _chunkTZCRTR22js.__async.call(void 0, exports, null, function* () {
+    _chunk3LZYGKVUjs.init_utils.call(void 0, );
+    var run = () => _chunk3LZYGKVUjs.__async.call(void 0, exports, null, function* () {
       var _a;
       const { context } = github;
       let deployComplete = false;
@@ -17212,7 +17294,7 @@ var require_main = _chunkTZCRTR22js.__commonJS.call(void 0, {
       const interval = parseInt(core.getInput("interval"), 10) || 1e4;
       const failWhenCancelled = core.getBooleanInput("fail_when_cancelled");
       const commitSha = ((_a = context.payload.pull_request) == null ? void 0 : _a.head.sha) || context.sha;
-      const deployment = yield _chunkTZCRTR22js.getDeployment.call(void 0, commitSha, {
+      const deployment = yield _chunk3LZYGKVUjs.getDeployment.call(void 0, commitSha, {
         vercel_team_id,
         vercel_project_id,
         vercel_access_token
@@ -17230,7 +17312,7 @@ var require_main = _chunkTZCRTR22js.__commonJS.call(void 0, {
         deployComplete = true;
       }
       if (!deployComplete) {
-        const success = yield _chunkTZCRTR22js.waitUntilDeployComplete.call(void 0, 
+        const success = yield _chunk3LZYGKVUjs.waitUntilDeployComplete.call(void 0, 
           deployment.url,
           failWhenCancelled,
           retryTimes,
@@ -17245,8 +17327,8 @@ var require_main = _chunkTZCRTR22js.__commonJS.call(void 0, {
         }
       }
       if (aliasTemplate) {
-        const aliasPreviewUrlGen = _chunkTZCRTR22js.generateAliasPreviewUrl.call(void 0, aliasTemplate);
-        const aliasedPreviewUrl = yield _chunkTZCRTR22js.aliasPreviewUrl.call(void 0, 
+        const aliasPreviewUrlGen = _chunk3LZYGKVUjs.generateAliasPreviewUrl.call(void 0, aliasTemplate);
+        const aliasedPreviewUrl = yield _chunk3LZYGKVUjs.aliasPreviewUrl.call(void 0, 
           deployment.uid,
           aliasPreviewUrlGen,
           {
