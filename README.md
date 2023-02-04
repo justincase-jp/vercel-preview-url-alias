@@ -47,7 +47,7 @@ jobs:
 
       - name: Get Vercel's Alias Preview URL
         id: alias-preview-url
-        uses: justincase-jp/vercel-preview-url-alias@0.1.0
+        uses: justincase-jp/vercel-preview-url-alias@0.2.1
         with:
           vercel_access_token: ${{ secrets.VERCEL_ACCESS_TOKEN }}
           vercel_team_id: ${{ secrets.VERCEL_TEAM_ID }}
@@ -78,7 +78,7 @@ jobs:
 
       - name: Get Vercel's Alias Preview URL
         id: alias-preview-url
-        uses: justincase-jp/vercel-preview-url-alias@0.1.0
+        uses: justincase-jp/vercel-preview-url-alias@0.2.1
         with:
           vercel_access_token: ${{ secrets.VERCEL_ACCESS_TOKEN }}
           vercel_team_id: ${{ secrets.VERCEL_TEAM_ID }}
