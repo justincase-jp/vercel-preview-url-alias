@@ -1,11 +1,30 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 5909:
+/***/ 3672:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", ({value: true})); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var __getOwnPropNames = Object.getOwnPropertyNames;
+Object.defineProperty(exports, "__esModule", ({value: true})); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var __esm = (fn, res) => function __init() {
   return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
 };
@@ -49,11 +68,10 @@ function getDeployment(commitSha, searchOptions) {
     const { deployments } = yield _axios2.default.get(
       "https://api.vercel.com/v6/deployments",
       {
-        params: {
-          teamId: searchOptions.vercel_team_id,
+        params: __spreadProps(__spreadValues({}, searchOptions.vercel_team_id ? { teamId: searchOptions.vercel_team_id } : null), {
           projectId: searchOptions.vercel_project_id,
           limit: 20
-        },
+        }),
         headers: {
           Authorization: `Bearer ${searchOptions.vercel_access_token}`
         }
@@ -17270,15 +17288,15 @@ Object.defineProperty(exports, "__esModule", ({value: true})); function _interop
 
 
 
-var _chunk3LZYGKVUjs = __nccwpck_require__(5909);
+var _chunkP3VWSHDRjs = __nccwpck_require__(3672);
 
 // src/main.ts
 var _core = __nccwpck_require__(8686); var core = _interopRequireWildcard(_core);
 var _github = __nccwpck_require__(7481); var github = _interopRequireWildcard(_github);
-var require_main = _chunk3LZYGKVUjs.__commonJS.call(void 0, {
+var require_main = _chunkP3VWSHDRjs.__commonJS.call(void 0, {
   "src/main.ts"(exports) {
-    _chunk3LZYGKVUjs.init_utils.call(void 0, );
-    var run = () => _chunk3LZYGKVUjs.__async.call(void 0, exports, null, function* () {
+    _chunkP3VWSHDRjs.init_utils.call(void 0, );
+    var run = () => _chunkP3VWSHDRjs.__async.call(void 0, exports, null, function* () {
       var _a;
       const { context } = github;
       let deployComplete = false;
@@ -17294,7 +17312,7 @@ var require_main = _chunk3LZYGKVUjs.__commonJS.call(void 0, {
       const interval = parseInt(core.getInput("interval"), 10) || 1e4;
       const failWhenCancelled = core.getBooleanInput("fail_when_cancelled");
       const commitSha = ((_a = context.payload.pull_request) == null ? void 0 : _a.head.sha) || context.sha;
-      const deployment = yield _chunk3LZYGKVUjs.getDeployment.call(void 0, commitSha, {
+      const deployment = yield _chunkP3VWSHDRjs.getDeployment.call(void 0, commitSha, {
         vercel_team_id,
         vercel_project_id,
         vercel_access_token
@@ -17312,7 +17330,7 @@ var require_main = _chunk3LZYGKVUjs.__commonJS.call(void 0, {
         deployComplete = true;
       }
       if (!deployComplete) {
-        const success = yield _chunk3LZYGKVUjs.waitUntilDeployComplete.call(void 0, 
+        const success = yield _chunkP3VWSHDRjs.waitUntilDeployComplete.call(void 0, 
           deployment.url,
           failWhenCancelled,
           retryTimes,
@@ -17327,8 +17345,8 @@ var require_main = _chunk3LZYGKVUjs.__commonJS.call(void 0, {
         }
       }
       if (aliasTemplate) {
-        const aliasPreviewUrlGen = _chunk3LZYGKVUjs.generateAliasPreviewUrl.call(void 0, aliasTemplate);
-        const aliasedPreviewUrl = yield _chunk3LZYGKVUjs.aliasPreviewUrl.call(void 0, 
+        const aliasPreviewUrlGen = _chunkP3VWSHDRjs.generateAliasPreviewUrl.call(void 0, aliasTemplate);
+        const aliasedPreviewUrl = yield _chunkP3VWSHDRjs.aliasPreviewUrl.call(void 0, 
           deployment.uid,
           aliasPreviewUrlGen,
           {

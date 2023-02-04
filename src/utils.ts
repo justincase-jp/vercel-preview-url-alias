@@ -14,7 +14,7 @@ export async function sleep(ms: number): Promise<void> {
 export async function getDeployment(
   commitSha: string,
   searchOptions: {
-    vercel_team_id: string;
+    vercel_team_id?: string;
     vercel_project_id: string;
     vercel_access_token: string;
   },
@@ -24,7 +24,9 @@ export async function getDeployment(
       'https://api.vercel.com/v6/deployments',
       {
         params: {
-          teamId: searchOptions.vercel_team_id,
+          ...(searchOptions.vercel_team_id
+            ? { teamId: searchOptions.vercel_team_id }
+            : null),
           projectId: searchOptions.vercel_project_id,
           limit: 20,
         },
