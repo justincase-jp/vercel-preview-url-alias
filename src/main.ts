@@ -24,10 +24,13 @@ const run = async (): Promise<void> => {
   const interval = parseInt(core.getInput('interval'), 10) || 10000;
   const failWhenCancelled = core.getBooleanInput('fail_when_cancelled');
 
+  // issue_comment: commit_sha from outside; pull_request: head.sha; push/merge: context.sha
+  const commitSha =
+    core.getInput('commit_sha') ||
+    context.payload.pull_request?.head.sha ||
+    context.sha;
+
   /* Search Target Deployment */
-  // pull_request: head.sha; push/merge: context.sha
-  const commitSha: string =
-    context.payload.pull_request?.head.sha || context.sha;
   const deployment = await getDeployment(commitSha, {
     vercel_team_id,
     vercel_project_id,

@@ -91,21 +91,22 @@ jobs:
 
 ## Options
 
-| `inputs`            | required |    default     | description                                                                                      |
-| :------------------ | :------: | :------------: | :----------------------------------------------------------------------------------------------- |
-| vercel_access_token |    ○     |                | https://vercel.com/docs/rest-api#introduction/api-basics/authentication/creating-an-access-token |
-| vercel_project_id   |    ○     |                | Get your Project ID from project settings in Vercel management console.                          |
-| vercel_team_id      |    △     |                | Get your Team ID in Vercel management console.                                                   |
-| alias_template      |    ○     |                | Your alias URL template. eg: (`hello.mysite.com`) or (`{random}.e2e-test.mysite.com`)            |
-| token               |          | `github.token` | Github Personal Access Token deployment                                                          |
-| interval            |          |  `10000 (ms)`  | waiting interval while deployment is not finished in milliseconds                                |
-| fail_when_cancelled |          |     `true`     | Fail CI when deployment status is `CANCELED`                                                     |
+| `inputs`            | required |    default     | description                                                                                                        |
+| :------------------ | :------: | :------------: | :----------------------------------------------------------------------------------------------------------------- |
+| vercel_access_token |    ○     |                | https://vercel.com/docs/rest-api#introduction/api-basics/authentication/creating-an-access-token                   |
+| vercel_project_id   |    ○     |                | Get your Project ID from project settings in Vercel management console.                                            |
+| vercel_team_id      |    △     |                | Get your Team ID in Vercel management console.                                                                     |
+| alias_template      |          |                | Your alias URL template. eg: (`hello.mysite.com`) or (`{random}.e2e-test.mysite.com`).                             |
+| token               |          | `github.token` | Github Personal Access Token deployment                                                                            |
+| interval            |          |  `10000 (ms)`  | waiting interval while deployment is not finished in milliseconds                                                  |
+| fail_when_cancelled |          |     `true`     | Fail CI when deployment status is `CANCELED`                                                                       |
+| commit_sha          |          |                | sha of commit which triggered Vercel Preview deployment. It is useful when workflow is triggered by issue_comment. |
 
-| `outputs`            | description                                          |
-| :------------------- | :--------------------------------------------------- |
-| `preview_url_alias`  | Alias of Vercel's Deployment Preview URL             |
-| `preview_url_origin` | Original Vercel's Deployment Preview URL             |
-| `status`             | `READY`, `ERROR`, `CANCELED`, `DEPLOYMENT_NOT_FOUND` |
+| `outputs`            | description                                                                               |
+| :------------------- | :---------------------------------------------------------------------------------------- |
+| `preview_url_alias`  | Alias of Vercel's Deployment Preview URL. (Will be empty if alias_template is not passed) |
+| `preview_url_origin` | Original Vercel's Deployment Preview URL                                                  |
+| `status`             | `READY`, `ERROR`, `CANCELED`, `DEPLOYMENT_NOT_FOUND`                                      |
 
 ## License
 
