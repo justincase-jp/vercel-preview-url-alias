@@ -33,6 +33,9 @@ inputs:
     description: 'Automatically fail if deployment of Vercel is cancelled(default: true)'
     required: false
     default: true
+  commit_sha:
+    description: 'sha of commit which triggered Vercel Preview deployment. It is useful when workflow is triggered by issue_comment.'
+    required: false
 outputs:
   preview_url_alias:
     description: 'Alias of Vercel Preview URL'

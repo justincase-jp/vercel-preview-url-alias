@@ -17540,7 +17540,7 @@ var require_main = _chunkP3VWSHDRjs.__commonJS.call(void 0, {
       const retryTimes = parseInt(core.getInput("retry_times"), 10) || 18;
       const interval = parseInt(core.getInput("interval"), 10) || 1e4;
       const failWhenCancelled = core.getBooleanInput("fail_when_cancelled");
-      const commitSha = ((_a = context.payload.pull_request) == null ? void 0 : _a.head.sha) || context.sha;
+      const commitSha = core.getInput("commit_sha") || ((_a = context.payload.pull_request) == null ? void 0 : _a.head.sha) || context.sha;
       const deployment = yield _chunkP3VWSHDRjs.getDeployment.call(void 0, commitSha, {
         vercel_team_id,
         vercel_project_id,
