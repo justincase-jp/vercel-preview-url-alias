@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "author": "jict",
   "license": "MIT",
-  "packageManager": "pnpm@7.29.1",
+  "packageManager": "pnpm@7.30.5",
   "description": "Get Vercel preview URL and alias it automatically",
   "main": "lib/main.js",
   "scripts": {
