@@ -16,9 +16,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.x
+          node-version-file: .nvmrc
+          cache: 'pnpm'
 
       - run: npx changelogithub
         env:
