@@ -44,5 +44,5 @@ outputs:
   status:
     description: 'Status of the Vercel deployment'
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
