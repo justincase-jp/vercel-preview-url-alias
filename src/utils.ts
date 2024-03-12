@@ -28,7 +28,7 @@ export async function getDeployment(
             ? { teamId: searchOptions.vercel_team_id }
             : null),
           projectId: searchOptions.vercel_project_id,
-          limit: 20,
+          limit: 100,
         },
         headers: {
           Authorization: `Bearer ${searchOptions.vercel_access_token}`,
