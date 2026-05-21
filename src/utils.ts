@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 import * as core from '@actions/core';
 import axios from 'axios';
 
-import type { AssignAlias, DeploymentV13, DeploymentV6 } from './typings';
+import type { AssignAlias, DeploymentV13, DeploymentV6 } from './typings.js';
 
 export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => {

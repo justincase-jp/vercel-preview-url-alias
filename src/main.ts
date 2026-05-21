@@ -6,7 +6,7 @@ import {
   generateAliasPreviewUrl,
   getDeployment,
   waitUntilDeployComplete,
-} from './utils';
+} from './utils.js';
 
 const run = async (): Promise<void> => {
   const { context } = github;
